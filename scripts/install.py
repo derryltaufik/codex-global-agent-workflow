@@ -14,16 +14,21 @@ END = "<!-- codex-global-agent-workflow:end -->"
 
 
 def replace_managed_block(existing: str, workflow: str) -> str:
-    block = f"{START}\n{workflow.strip()}\n{END}"
+    workflow = workflow.strip()
+    block = f"{START}\n{workflow}\n{END}"
     pattern = re.compile(
         rf"(?:\n*){re.escape(START)}.*?{re.escape(END)}(?:\n*)",
         re.DOTALL,
     )
-    if pattern.search(existing):
-        return pattern.sub(f"\n\n{block}\n", existing).strip() + "\n"
-    if existing.strip():
-        return existing.rstrip() + f"\n\n{block}\n"
-    return block + "\n"
+    unmanaged = pattern.sub("\n", existing)
+
+    # Migrate installations created before managed markers were introduced.
+    # Remove only exact copies of this workflow, preserving all other guidance.
+    unmanaged = unmanaged.replace(workflow, "")
+    unmanaged = unmanaged.strip()
+    if unmanaged:
+        return f"{unmanaged}\n\n{block}\n"
+    return f"{block}\n"
 
 
 def update_agents_config(existing: str) -> str:

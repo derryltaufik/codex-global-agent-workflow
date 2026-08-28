@@ -2,9 +2,9 @@
 
 A portable, machine-wide Codex setup for proportional routing through three custom agents:
 
-- `planner`: GPT-5.6 xhigh, read-only architecture and planning
+- `planner`: GPT-5.6 Sol xhigh, read-only architecture and planning
 - `worker`: GPT-5.6 Terra medium, bounded implementation and verification
-- `reviewer`: GPT-5.6 high, independent read-only defect review
+- `reviewer`: GPT-5.6 Sol high, independent read-only defect review
 
 The root Codex agent remains responsible for task classification, integration, reviewer-finding triage, and final acceptance. The full pipeline is reserved for work whose complexity or risk justifies its coordination cost.
 

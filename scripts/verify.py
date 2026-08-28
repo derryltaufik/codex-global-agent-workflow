@@ -17,18 +17,20 @@ def main() -> None:
     assert agents.get("max_concurrent_threads_per_session") == 3, "unexpected thread cap"
 
     expected = {
-        "planner.toml": "planner",
-        "worker.toml": "worker",
-        "reviewer.toml": "reviewer",
+        "planner.toml": ("planner", "gpt-5.6-sol"),
+        "worker.toml": ("worker", "gpt-5.6-terra"),
+        "reviewer.toml": ("reviewer", "gpt-5.6-sol"),
     }
-    for filename, name in expected.items():
+    for filename, (name, model) in expected.items():
         data = tomllib.loads((codex_home / "agents" / filename).read_text(encoding="utf-8"))
         assert data.get("name") == name, f"invalid agent name in {filename}"
+        assert data.get("model") == model, f"unexpected model in {filename}"
         for required in ("description", "developer_instructions"):
             assert data.get(required), f"missing {required} in {filename}"
 
     instructions = (codex_home / "AGENTS.md").read_text(encoding="utf-8")
-    assert START in instructions and END in instructions, "managed workflow block is missing"
+    assert instructions.count(START) == 1, "expected exactly one workflow start marker"
+    assert instructions.count(END) == 1, "expected exactly one workflow end marker"
     print(f"Verified global Codex workflow in {codex_home}")
 
 
