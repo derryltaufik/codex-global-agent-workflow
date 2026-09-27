@@ -17,14 +17,15 @@ def main() -> None:
     assert agents.get("max_concurrent_threads_per_session") == 3, "unexpected thread cap"
 
     expected = {
-        "planner.toml": ("planner", "gpt-5.6-sol"),
-        "worker.toml": ("worker", "gpt-5.6-terra"),
-        "reviewer.toml": ("reviewer", "gpt-5.6-sol"),
+        "planner.toml": ("planner", "gpt-6-sol", "xhigh"),
+        "worker.toml": ("worker", "gpt-6-luna", "high"),
+        "reviewer.toml": ("reviewer", "gpt-6-sol", "high"),
     }
-    for filename, (name, model) in expected.items():
+    for filename, (name, model, effort) in expected.items():
         data = tomllib.loads((codex_home / "agents" / filename).read_text(encoding="utf-8"))
         assert data.get("name") == name, f"invalid agent name in {filename}"
         assert data.get("model") == model, f"unexpected model in {filename}"
+        assert data.get("model_reasoning_effort") == effort, f"unexpected reasoning effort in {filename}"
         for required in ("description", "developer_instructions"):
             assert data.get(required), f"missing {required} in {filename}"
 

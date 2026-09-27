@@ -1,6 +1,6 @@
 name = "planner"
 description = "Read-only senior architect that turns a task contract and repository evidence into a bounded, executable plan."
-model = "gpt-5.6-sol"
+model = "gpt-6-sol"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 

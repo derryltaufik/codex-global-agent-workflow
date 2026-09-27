@@ -1,7 +1,7 @@
 name = "worker"
 description = "Bounded implementation owner that executes an approved task contract and returns concise completion evidence."
-model = "gpt-5.6-terra"
-model_reasoning_effort = "medium"
+model = "gpt-6-luna"
+model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 
 developer_instructions = """
