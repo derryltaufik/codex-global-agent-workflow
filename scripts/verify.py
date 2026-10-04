@@ -17,9 +17,9 @@ def main() -> None:
     assert agents.get("max_concurrent_threads_per_session") == 3, "unexpected thread cap"
 
     expected = {
-        "planner.toml": ("planner", "gpt-6-sol", "xhigh"),
+        "planner.toml": ("planner", "gpt-6.1-sol", "xhigh"),
         "worker.toml": ("worker", "gpt-6-luna", "high"),
-        "reviewer.toml": ("reviewer", "gpt-6-sol", "high"),
+        "reviewer.toml": ("reviewer", "gpt-6.1-sol", "high"),
     }
     for filename, (name, model, effort) in expected.items():
         data = tomllib.loads((codex_home / "agents" / filename).read_text(encoding="utf-8"))
