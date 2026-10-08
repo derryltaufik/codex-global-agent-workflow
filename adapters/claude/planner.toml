@@ -1,0 +1,5 @@
+name = "planner"
+description = "Read-only senior architect that turns a task contract and repository evidence into a bounded, executable plan."
+model = "claude-opus-5-5"
+effort = "high"
+tools = ["Read", "Glob", "Grep"]
