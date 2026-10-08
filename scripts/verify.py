@@ -17,7 +17,7 @@ def main() -> None:
     assert agents.get("max_concurrent_threads_per_session") == 3, "unexpected thread cap"
 
     expected = {
-        "planner.toml": ("planner", "gpt-6.1-sol", "xhigh"),
+        "planner.toml": ("planner", "gpt-6-astra", "xhigh"),
         "worker.toml": ("worker", "gpt-6-luna", "high"),
         "reviewer.toml": ("reviewer", "gpt-6.1-sol", "high"),
     }

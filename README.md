@@ -2,13 +2,13 @@
 
 A portable, machine-wide Codex setup for proportional routing through three custom agents:
 
-- `planner`: GPT-6.1 Sol xhigh, read-only architecture and planning
+- `planner`: GPT-6 Astra xhigh, read-only architecture and planning
 - `worker`: GPT-6 Luna high, bounded implementation and verification
 - `reviewer`: GPT-6.1 Sol high, independent read-only defect review
 
 The root Codex agent remains responsible for task classification, integration, reviewer-finding triage, and final acceptance. The full pipeline is reserved for work whose complexity or risk justifies its coordination cost.
 
-Sol handles architecture and independent review; Luna executes bounded implementation tasks with high reasoning effort. For high-risk implementation, the root should use Sol through the existing suitably strong implementation path. Model IDs and supported reasoning levels are listed in the [OpenAI model catalog](https://developers.openai.com/api/docs/models).
+Astra handles architecture and planning; Sol provides independent review; Luna executes bounded implementation tasks with high reasoning effort. For high-risk implementation, the root should use Sol through the existing suitably strong implementation path. Model IDs and supported reasoning levels are listed in the [OpenAI model catalog](https://developers.openai.com/api/docs/models).
 
 ## Install
 
