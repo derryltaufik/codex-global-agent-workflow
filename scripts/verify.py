@@ -1,39 +1,42 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
-import os
-import tomllib
-from pathlib import Path
+import sys
 
-START = "<!-- codex-global-agent-workflow:start -->"
-END = "<!-- codex-global-agent-workflow:end -->"
+from common import (WorkflowError, arguments, destination_text, load_sources, selected_homes,
+                    validate_home, verify_config, verify_workflow)
 
 
 def main() -> None:
-    codex_home = Path(os.environ.get("CODEX_HOME", Path.home() / ".codex")).expanduser()
-    config = tomllib.loads((codex_home / "config.toml").read_text(encoding="utf-8"))
-    agents = config.get("agents", {})
-    assert agents.get("enabled") is True, "multi-agent support is not enabled"
-    assert agents.get("max_concurrent_threads_per_session") == 3, "unexpected thread cap"
+    args = arguments('Verify installed native agents and workflow against this checkout.')
+    homes = selected_homes(args)
+    sources = load_sources(args.repository_root, homes)
+    for target, home in homes.items():
+        validate_home(home)
+        instruction = home / ('AGENTS.md' if target == 'codex' else 'CLAUDE.md')
+        content = destination_text(instruction)
+        if content is None:
+            raise WorkflowError(f'{instruction}: missing instructions')
+        verify_workflow(content, sources, str(instruction))
+        suffix = '.toml' if target == 'codex' else '.md'
+        for role, expected in sources.roles[target].items():
+            path = home / 'agents' / f'{role}{suffix}'
+            if destination_text(path) != expected:
+                raise WorkflowError(f'{path}: installed agent differs from shared prompt or adapter metadata')
+        if target == 'codex':
+            path = home / 'config.toml'
+            config = destination_text(path)
+            if config is None:
+                raise WorkflowError(f'{path}: missing config')
+            verify_config(config)
+            if path.stat().st_mode & 0o777 != 0o600:
+                raise WorkflowError(f'{path}: expected permissions 0600')
+        print(f'Verified global {target} workflow in {home}')
 
-    expected = {
-        "planner.toml": ("planner", "gpt-6-astra", "xhigh"),
-        "worker.toml": ("worker", "gpt-6-luna", "high"),
-        "reviewer.toml": ("reviewer", "gpt-6.1-sol", "high"),
-    }
-    for filename, (name, model, effort) in expected.items():
-        data = tomllib.loads((codex_home / "agents" / filename).read_text(encoding="utf-8"))
-        assert data.get("name") == name, f"invalid agent name in {filename}"
-        assert data.get("model") == model, f"unexpected model in {filename}"
-        assert data.get("model_reasoning_effort") == effort, f"unexpected reasoning effort in {filename}"
-        for required in ("description", "developer_instructions"):
-            assert data.get(required), f"missing {required} in {filename}"
 
-    instructions = (codex_home / "AGENTS.md").read_text(encoding="utf-8")
-    assert instructions.count(START) == 1, "expected exactly one workflow start marker"
-    assert instructions.count(END) == 1, "expected exactly one workflow end marker"
-    print(f"Verified global Codex workflow in {codex_home}")
-
-
-if __name__ == "__main__":
-    main()
+if __name__ == '__main__':
+    try:
+        main()
+    except (WorkflowError, OSError, UnicodeError) as error:
+        print(f'Verification failed: {error}', file=sys.stderr)
+        raise SystemExit(1)

@@ -1,0 +1,5 @@
+name = "reviewer"
+description = "Independent read-only reviewer that identifies contract-relevant defects without creating rework churn."
+model = "claude-opus-5-5"
+effort = "high"
+tools = ["Read", "Glob", "Grep"]

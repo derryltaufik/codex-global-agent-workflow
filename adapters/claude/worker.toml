@@ -1,0 +1,5 @@
+name = "worker"
+description = "Bounded implementation owner that executes an approved task contract and returns concise completion evidence."
+model = "claude-sonnet-5-5"
+effort = "high"
+tools = ["Read", "Glob", "Grep", "Bash", "Edit", "Write"]

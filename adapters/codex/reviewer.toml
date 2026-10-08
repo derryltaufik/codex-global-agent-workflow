@@ -1,0 +1,5 @@
+name = "reviewer"
+description = "Independent read-only reviewer that identifies contract-relevant defects without creating rework churn."
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
+sandbox_mode = "read-only"
